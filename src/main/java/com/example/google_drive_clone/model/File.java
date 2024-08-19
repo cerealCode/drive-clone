@@ -1,8 +1,10 @@
 package com.example.google_drive_clone.model;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Entity
 public class File {
@@ -13,15 +15,19 @@ public class File {
     private String filename;
     private String fileType;
     private byte[] data;
+    private LocalDateTime uploadTime;
+    private User owner;
 
     // Constructors, Getters, Setters
 
     public File() {}
 
-    public File(String filename, String fileType, byte[] data) {
+    public File(String filename, String fileType, byte[] data, LocalDateTime uploadTime, User owner) {
         this.filename = filename;
         this.fileType = fileType;
         this.data = data;
+        this.uploadTime = uploadTime;
+        this.owner = owner;
     }
 
     public Long getId() {
@@ -54,5 +60,21 @@ public class File {
 
     public void setData(byte[] data) {
         this.data = data;
+    }
+
+    public LocalDateTime getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(LocalDateTime uploadTime) {
+        this.uploadTime = uploadTime;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

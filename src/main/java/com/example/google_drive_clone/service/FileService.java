@@ -17,8 +17,16 @@ public class FileService {
         return fileRepository.findAll();
     }
 
-    public File saveFile(File file) {
+    public File save(File file) {
         return fileRepository.save(file);
+    }
+
+    public File findById(Long fileId) {
+        return fileRepository.findById(fileId).orElse(null);
+    }
+
+    public List<File> findFilesByOwner(Long ownerId) {
+        return fileRepository.findByOwnerId(ownerId);
     }
 
     public void deleteFile(Long id) {

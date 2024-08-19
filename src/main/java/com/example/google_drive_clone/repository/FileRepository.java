@@ -1,7 +1,6 @@
 package com.example.google_drive_clone.repository;
 
-
-import com.google_drive_clone.model.File;
+import com.example.google_drive_clone.model.File;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
