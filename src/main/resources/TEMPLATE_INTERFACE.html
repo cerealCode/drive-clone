@@ -1,0 +1,344 @@
+
+Here's a structured approach to creating interfaces for the file management system, including login, registration, file upload, and download functionalities. I'll outline the key classes, interfaces, and a simple frontend to make it "cool" and user-friendly.
+
+1. Frontend (HTML, CSS, JavaScript)
+Let's create a simple and sleek UI using HTML, CSS, and JavaScript for the main functionalities: login, registration, file upload, and file management.
+
+HTML Structure
+html
+Copiar código
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive Clone</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="login-container" class="auth-container">
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="#" id="show-register">Register here</a></p>
+        </div>
+
+        <div id="register-container" class="auth-container hidden">
+            <h2>Register</h2>
+            <form id="register-form">
+                <input type="text" id="reg-username" placeholder="Username" required>
+                <input type="password" id="reg-password" placeholder="Password" required>
+                <button type="submit">Register</button>
+            </form>
+            <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
+        </div>
+
+        <div id="dashboard" class="hidden">
+            <h2>File Management</h2>
+            <form id="upload-form">
+                <input type="file" id="file-upload" required>
+                <input type="text" id="file-name" placeholder="File name" required>
+                <button type="submit">Upload</button>
+            </form>
+            <h3>My Files</h3>
+            <ul id="file-list"></ul>
+            <button id="logout">Logout</button>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
+CSS Styling
+css
+Copiar código
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.auth-container, .dashboard {
+    margin-bottom: 20px;
+}
+
+input[type="text"], input[type="password"], input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+.hidden {
+    display: none;
+}
+
+#file-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#file-list li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+#logout {
+    background-color: #dc3545;
+}
+
+#logout:hover {
+    background-color: #c82333;
+}
+JavaScript Logic
+javascript
+Copiar código
+// app.js
+document.addEventListener('DOMContentLoaded', function () {
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const uploadForm = document.getElementById('upload-form');
+    const loginContainer = document.getElementById('login-container');
+    const registerContainer = document.getElementById('register-container');
+    const dashboard = document.getElementById('dashboard');
+    const fileList = document.getElementById('file-list');
+    const logoutBtn = document.getElementById('logout');
+
+    // Show register form
+    document.getElementById('show-register').addEventListener('click', function () {
+        loginContainer.classList.add('hidden');
+        registerContainer.classList.remove('hidden');
+    });
+
+    // Show login form
+    document.getElementById('show-login').addEventListener('click', function () {
+        registerContainer.classList.add('hidden');
+        loginContainer.classList.remove('hidden');
+    });
+
+    // Login form submission
+    loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        // Perform AJAX login request (Example)
+        // Simulating a successful login
+        if (username === 'user' && password === 'pass') {
+            loginContainer.classList.add('hidden');
+            dashboard.classList.remove('hidden');
+            loadFiles();
+        } else {
+            alert('Invalid login credentials');
+        }
+    });
+
+    // Register form submission
+    registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const username = document.getElementById('reg-username').value;
+        const password = document.getElementById('reg-password').value;
+
+        // Perform AJAX registration request (Example)
+        alert('Registration successful!');
+        registerContainer.classList.add('hidden');
+        loginContainer.classList.remove('hidden');
+    });
+
+    // Upload form submission
+    uploadForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const file = document.getElementById('file-upload').files[0];
+        const fileName = document.getElementById('file-name').value;
+
+        // Perform AJAX upload request (Example)
+        const listItem = document.createElement('li');
+        listItem.textContent = fileName;
+        fileList.appendChild(listItem);
+        alert('File uploaded successfully!');
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', function () {
+        dashboard.classList.add('hidden');
+        loginContainer.classList.remove('hidden');
+    });
+
+    // Load files (Example)
+    function loadFiles() {
+        fileList.innerHTML = '';
+        const files = ['file1.txt', 'file2.jpg', 'file3.pdf'];
+        files.forEach(file => {
+            const listItem = document.createElement('li');
+            listItem.textContent = file;
+            fileList.appendChild(listItem);
+        });
+    }
+});
+2. Backend Interfaces (Spring Controllers)
+Next, we create the necessary controllers in Spring Boot to handle login, registration, and file management.
+
+UserController.java
+java
+Copiar código
+package com.example.google_drive_clone.controller;
+
+import com.example.google_drive_clone.model.User;
+import com.example.google_drive_clone.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/register")
+    public String registerUser(@RequestBody User user) {
+        userService.save(user);
+        return "Registration successful!";
+    }
+
+    @PostMapping("/login")
+    public User loginUser(@RequestBody User user) {
+        User foundUser = userService.findByUsername(user.getUsername());
+        if (foundUser != null && foundUser.getPassword().equals(user.getPassword())) {
+            return foundUser;
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
+    }
+}
+FileController.java
+java
+Copiar código
+package com.example.google_drive_clone.controller;
+
+import com.example.google_drive_clone.model.File;
+import com.example.google_drive_clone.model.User;
+import com.example.google_drive_clone.service.FileService;
+import com.example.google_drive_clone.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/files")
+public class FileController {
+
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/upload")
+    public File uploadFile(@RequestParam("file") MultipartFile file,
+                           @RequestParam("username") String username) throws IOException {
+        User user = userService.findByUsername(username);
+        File newFile = new File();
+        newFile.setFilename(file.getOriginalFilename());
+        newFile.setFileType(file.getContentType());
+        newFile.setData(file.getBytes());
+        newFile.setUploadTime(LocalDateTime.now());
+        newFile.setOwner(user);
+        return fileService.save(newFile);
+    }
+
+    @GetMapping("/user/{username}")
+    public List<File> getFilesByUser(@PathVariable String username) {
+        User user = userService.findByUsername(username);
+        return fileService.findFilesByOwner(user.getId());
+    }
+
+    @GetMapping("/{fileId}")
+    public File getFileById(@PathVariable Long fileId) {
+        return fileService.findById(fileId);
+    }
+}
+3. Spring Security Configuration (Optional)
+To make your application more secure, you can implement Spring Security for authentication and authorization.
+
+SecurityConfig.java
+java
+Copiar código
+package com.example.google_drive_clone.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/api/users/register", "/api/users/login").permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .formLogin().disable();
+        return http.build();
+    }
+}
+4. Running the Application
+Ensure your application is running by packaging it with Maven:
+
+bash
+Copiar código
+mvn clean package
+And then run the Spring Boot application. Access the frontend at http://localhost:8080 and test the features like login, registration, and file management.
+
+This setup gives you a clean and functional interface for managing files, including user authentication. The backend provides RESTful services that can be consumed by the frontend, allowing for a seamless user experience.
+
+
+
+
+
+

@@ -8,16 +8,23 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.save(user);
+    public String registerUser(@RequestBody User user) {
+        userService.save(user);
+        return "Registration successful!";
     }
 
-    @GetMapping("/{username}")
-    public User getUserByUsername(@PathVariable String username) {
-        return userService.findByUsername(username);
+    @PostMapping("/login")
+    public User loginUser(@RequestBody User user) {
+        User foundUser = userService.findByUsername(user.getUsername());
+        if (foundUser != null && foundUser.getPassword().equals(user.getPassword())) {
+            return foundUser;
+        } else {
+            throw new RuntimeException("Invalid credentials");
+        }
     }
 }

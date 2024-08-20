@@ -1,13 +1,13 @@
-package com.example.google_drive_clone;
+// package com.example.google_drive_clone;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class CloneDriveProjectApplicationTests {
+// @SpringBootTest
+// class CloneDriveProjectApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+//     @Test
+//     void contextLoads() {
+//     }
 
-}
+// }

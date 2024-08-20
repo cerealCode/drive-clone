@@ -1,33 +1,45 @@
 package com.example.google_drive_clone.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "files")
 public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String filename;
-    private String fileType;
-    private byte[] data;
-    private LocalDateTime uploadTime;
+
+    @Column(nullable = false)
+    private String fileName;
+
+    @Column(nullable = false)
+    private String filePath;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
+
+    @Column(nullable = false)
+    private LocalDateTime uploadTime;
 
     // Constructors, Getters, Setters
 
     public File() {}
 
-    public File(String filename, String fileType, byte[] data, LocalDateTime uploadTime, User owner) {
-        this.filename = filename;
-        this.fileType = fileType;
-        this.data = data;
-        this.uploadTime = uploadTime;
+    public File(String fileName, String filePath, User owner, LocalDateTime uploadTime) {
+        this.fileName = fileName;
+        this.filePath = filePath;
         this.owner = owner;
+        this.uploadTime = uploadTime;
     }
 
     public Long getId() {
@@ -38,36 +50,20 @@ public class File {
         this.id = id;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    public String getFileType() {
-        return fileType;
+    public String getFilePath() {
+        return filePath;
     }
 
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
-    public byte[] getData() {
-        return data;
-    }
-
-    public void setData(byte[] data) {
-        this.data = data;
-    }
-
-    public LocalDateTime getUploadTime() {
-        return uploadTime;
-    }
-
-    public void setUploadTime(LocalDateTime uploadTime) {
-        this.uploadTime = uploadTime;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public User getOwner() {
@@ -76,5 +72,13 @@ public class File {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public LocalDateTime getUploadTime() {
+        return uploadTime;
+    }
+
+    public void setUploadTime(LocalDateTime uploadTime) {
+        this.uploadTime = uploadTime;
     }
 }
