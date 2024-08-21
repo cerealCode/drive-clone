@@ -18,20 +18,14 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     // Method to save the user with an encoded password
-    public void saveUser(User user) {
-        // Encode the user's password before saving it
+    public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     // Method to retrieve all users
     public List<User> getAllUsers() {
         return userRepository.findAll();
-    }
-
-    // Method to save a user (not recommended to have both save and saveUser)
-    public User save(User user) {
-        return userRepository.save(user);
     }
 
     // Method to find a user by their ID
