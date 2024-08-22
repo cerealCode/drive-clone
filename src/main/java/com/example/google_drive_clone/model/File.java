@@ -1,46 +1,28 @@
 package com.example.google_drive_clone.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "files")
 public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String fileName;
-
-    @Column(nullable = false)
     private String filePath;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
-
-    @Column(nullable = false)
     private LocalDateTime uploadTime;
 
-    // Constructors, Getters, Setters
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public File() {}
+    @ManyToOne
+    @JoinColumn(name = "folder_id")
+    private Folder folder;  // Ensure this field exists
 
-    public File(String fileName, String filePath, User owner, LocalDateTime uploadTime) {
-        this.fileName = fileName;
-        this.filePath = filePath;
-        this.owner = owner;
-        this.uploadTime = uploadTime;
-    }
+    // Getters and Setters
 
     public Long getId() {
         return id;
@@ -66,19 +48,27 @@ public class File {
         this.filePath = filePath;
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
     public LocalDateTime getUploadTime() {
         return uploadTime;
     }
 
     public void setUploadTime(LocalDateTime uploadTime) {
         this.uploadTime = uploadTime;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 }

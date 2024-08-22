@@ -5,40 +5,58 @@ import com.example.google_drive_clone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
-    // Method to save the user with an encoded password
-    public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // Method to retrieve all users
+    @Transactional
+    public User saveOrUpdateUser(User user) {
+        System.out.println("Saving user: " + user.getUsername()); 
+        if (user.getPassword() != null && !user.getPassword().startsWith("{bcrypt}")) {
+            System.out.println("Encoding password for user: " + user.getUsername()); 
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        User savedUser = userRepository.save(user);
+        System.out.println("User saved with ID: " + savedUser.getId()); 
+        return savedUser;
+    }
+
+
+    @Transactional(readOnly = true)
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Method to find a user by their ID
+    @Transactional(readOnly = true)
     public User findById(Long userId) {
         return userRepository.findById(userId).orElse(null);
     }
 
-    // Method to find a user by their username
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    // Method to delete a user by their ID
+    @Transactional(readOnly = true)
+    public Page<User> findAllUsersWithPagination(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    @Transactional
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

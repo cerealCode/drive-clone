@@ -1,3 +1,5 @@
+// FileController.java
+
 package com.example.google_drive_clone.controller;
 
 import com.example.google_drive_clone.model.File;
@@ -27,7 +29,7 @@ public class FileController {
     @Autowired
     private UserService userService;
 
-    private static String UPLOADED_FOLDER = "C://temp//"; // Update this path accordingly
+    private static final String UPLOADED_FOLDER = "C://temp//"; // Update this path accordingly
 
     @PostMapping("/upload")
     public String handleFileUpload(@RequestParam("file") MultipartFile file, Authentication authentication, Model model) {
@@ -42,7 +44,7 @@ public class FileController {
             File newFile = new File();
             newFile.setFileName(file.getOriginalFilename());
             newFile.setFilePath(path.toString());
-            newFile.setOwner(user);
+            newFile.setUser(user);
             newFile.setUploadTime(LocalDateTime.now());
 
             fileService.save(newFile);

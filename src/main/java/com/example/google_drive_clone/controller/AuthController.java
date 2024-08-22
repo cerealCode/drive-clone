@@ -33,11 +33,11 @@ public class AuthController {
             return "register";
         }
 
-        // Encode the password
+        // Encode the password here
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Save the user
-        userService.saveUser(user);
+        // Save the user with the encoded password
+        userService.saveOrUpdateUser(user);
 
         // Redirect to login or show success message
         model.addAttribute("success", "Registration successful. Please login.");

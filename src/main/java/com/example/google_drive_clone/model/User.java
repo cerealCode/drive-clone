@@ -1,10 +1,11 @@
 package com.example.google_drive_clone.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users") // Add a table name if you want to specify a name for the table in the DB
+@Table(name = "users")  // Specify table name explicitly
 public class User {
 
     @Id
@@ -17,8 +18,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<File> files;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<File> files = new ArrayList<>();
 
     // Default constructor
     public User() {}
@@ -29,43 +30,53 @@ public class User {
         this.password = password;
     }
 
-    // Getter for id
+    // Getter and Setter for id
     public Long getId() {
         return id;
     }
 
-    // Setter for id
     public void setId(Long id) {
         this.id = id;
     }
 
-    // Getter for username
+    // Getter and Setter for username
     public String getUsername() {
         return username;
     }
 
-    // Setter for username
     public void setUsername(String username) {
         this.username = username;
     }
 
-    // Getter for password
+    // Getter and Setter for password
     public String getPassword() {
         return password;
     }
 
-    // Setter for password
     public void setPassword(String password) {
         this.password = password;
     }
 
-    // Getter for files
+    // Getter and Setter for files
     public List<File> getFiles() {
         return files;
     }
 
-    // Setter for files
     public void setFiles(List<File> files) {
         this.files = files;
     }
+
+    // Utility method to add a file
+    public void addFile(File file) {
+        files.add(file);
+        file.setUser(this);
+    }
+
+    // Utility method to remove a file
+    public void removeFile(File file) {
+        files.remove(file);
+        file.setUser(null);
+    }
+
+    
 }
