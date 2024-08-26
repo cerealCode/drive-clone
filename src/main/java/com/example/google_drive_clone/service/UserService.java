@@ -8,11 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private final UserRepository userRepository;
@@ -28,20 +32,22 @@ public class UserService {
     @Transactional
     public User saveOrUpdateUser(User user) {
         try {
-            System.out.println("Saving user: " + user.getUsername());
+            logger.info("Saving user: {}", user.getUsername());
             
             // Password encoding
-            if (user.getPassword() != null && !user.getPassword().startsWith("{bcrypt}")) {
-                System.out.println("Encoding password for user: " + user.getUsername());
+            if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+                logger.info("Encoding password for user: {}", user.getUsername());
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
+            } else {
+                logger.info("Password for user {} is already encoded.", user.getUsername());
             }
 
             User savedUser = userRepository.save(user);
-            System.out.println("User saved with ID: " + savedUser.getId());
+            logger.info("User saved with ID: {}", savedUser.getId());
 
             return savedUser;
         } catch (Exception e) {
-            System.err.println("Error saving user: " + e.getMessage());
+            logger.error("Error saving user: {}", e.getMessage(), e);
             throw e;
         }
     }
