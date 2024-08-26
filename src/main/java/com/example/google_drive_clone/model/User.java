@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "users")  // Specify table name explicitly
+@Table(name = "users")
 public class User {
 
     @Id
@@ -30,7 +30,7 @@ public class User {
         this.password = password;
     }
 
-    // Getter and Setter for id
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -39,7 +39,6 @@ public class User {
         this.id = id;
     }
 
-    // Getter and Setter for username
     public String getUsername() {
         return username;
     }
@@ -48,7 +47,6 @@ public class User {
         this.username = username;
     }
 
-    // Getter and Setter for password
     public String getPassword() {
         return password;
     }
@@ -57,7 +55,6 @@ public class User {
         this.password = password;
     }
 
-    // Getter and Setter for files
     public List<File> getFiles() {
         return files;
     }
@@ -66,17 +63,13 @@ public class User {
         this.files = files;
     }
 
-    // Utility method to add a file
     public void addFile(File file) {
         files.add(file);
         file.setUser(this);
     }
 
-    // Utility method to remove a file
     public void removeFile(File file) {
         files.remove(file);
         file.setUser(null);
     }
-
-    
 }

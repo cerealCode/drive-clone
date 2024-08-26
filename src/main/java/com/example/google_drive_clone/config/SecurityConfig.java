@@ -23,49 +23,40 @@ public class SecurityConfig {
     private CustomUserDetailsService userDetailsService;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        try {
-            http
-                // CSRF Configuration
-                .csrf(csrf -> csrf.disable())
+public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    try {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/perform_login")
+                .defaultSuccessUrl("/index", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+            .sessionManagement(session -> session
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(false)
+            );
 
-                // Authorization Configuration
-                .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**").permitAll()
-                    .anyRequest().authenticated()
-                )
-
-                // Form Login Configuration
-                .formLogin(form -> form
-                    .loginPage("/login")
-                    .loginProcessingUrl("/perform_login")
-                    .defaultSuccessUrl("/index", true)
-                    .failureUrl("/login?error=true")
-                    .permitAll()
-                )
-
-                // Logout Configuration
-                .logout(logout -> logout
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/login?logout=true")
-                    .deleteCookies("JSESSIONID")
-                    .permitAll()
-                )
-
-                // Session Management Configuration
-                .sessionManagement(session -> session
-                    .maximumSessions(1)
-                    .maxSessionsPreventsLogin(false)
-                );
-
-            logger.info("Security configuration successfully applied.");
-
-            return http.build();
-        } catch (Exception e) {
-            logger.error("Error in configuring security settings: ", e);
-            throw e;
-        }
+        logger.info("Security configuration successfully applied.");
+        
+        return http.build();
+    } catch (Exception e) {
+        logger.error("Error in configuring security settings: ", e);
+        throw e;
     }
+}
 
     @Bean
     public PasswordEncoder passwordEncoder() {

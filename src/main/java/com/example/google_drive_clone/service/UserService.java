@@ -14,9 +14,11 @@ import java.util.List;
 @Service
 public class UserService {
 
+    @Autowired
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -25,16 +27,24 @@ public class UserService {
 
     @Transactional
     public User saveOrUpdateUser(User user) {
-        System.out.println("Saving user: " + user.getUsername()); 
-        if (user.getPassword() != null && !user.getPassword().startsWith("{bcrypt}")) {
-            System.out.println("Encoding password for user: " + user.getUsername()); 
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        User savedUser = userRepository.save(user);
-        System.out.println("User saved with ID: " + savedUser.getId()); 
-        return savedUser;
-    }
+        try {
+            System.out.println("Saving user: " + user.getUsername());
+            
+            // Password encoding
+            if (user.getPassword() != null && !user.getPassword().startsWith("{bcrypt}")) {
+                System.out.println("Encoding password for user: " + user.getUsername());
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
 
+            User savedUser = userRepository.save(user);
+            System.out.println("User saved with ID: " + savedUser.getId());
+
+            return savedUser;
+        } catch (Exception e) {
+            System.err.println("Error saving user: " + e.getMessage());
+            throw e;
+        }
+    }
 
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
