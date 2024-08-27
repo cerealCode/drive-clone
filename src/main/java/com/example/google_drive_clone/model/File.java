@@ -4,26 +4,31 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "file")
 public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "file_name")
     private String fileName;
-    private String filePath;
-    private LocalDateTime uploadTime;
+
+    @Column(name = "content_type")
+    private String contentType;
+
+    @Lob
+    @Column(name = "data")
+    private byte[] data;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "folder_id")
-    private Folder folder;  // Ensure this field exists
+    @Column(name = "upload_time")
+    private LocalDateTime uploadTime;
 
     // Getters and Setters
-
     public Long getId() {
         return id;
     }
@@ -40,20 +45,20 @@ public class File {
         this.fileName = fileName;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public String getContentType() {
+        return contentType;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 
-    public LocalDateTime getUploadTime() {
-        return uploadTime;
+    public byte[] getData() {
+        return data;
     }
 
-    public void setUploadTime(LocalDateTime uploadTime) {
-        this.uploadTime = uploadTime;
+    public void setData(byte[] data) {
+        this.data = data;
     }
 
     public User getUser() {
@@ -64,11 +69,11 @@ public class File {
         this.user = user;
     }
 
-    public Folder getFolder() {
-        return folder;
+    public LocalDateTime getUploadTime() {
+        return uploadTime;
     }
 
-    public void setFolder(Folder folder) {
-        this.folder = folder;
+    public void setUploadTime(LocalDateTime uploadTime) {
+        this.uploadTime = uploadTime;
     }
 }

@@ -15,6 +15,5 @@ public interface FileRepository extends JpaRepository<File, Long> {
     List<File> findByOwnerId(@Param("ownerId") Long ownerId);
 
     @Query("SELECT f FROM File f WHERE f.fileName LIKE %:keyword% AND f.user.id = :ownerId")
-List<File> searchFilesByKeyword(@Param("keyword") String keyword, @Param("ownerId") Long ownerId);
-
+    List<File> searchFilesByKeyword(@Param("keyword") String keyword, @Param("ownerId") Long ownerId);
 }
