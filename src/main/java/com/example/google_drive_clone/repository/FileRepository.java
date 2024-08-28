@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface FileRepository extends JpaRepository<File, Long> {
-    
+
     @Query("SELECT f FROM File f WHERE f.user.id = :ownerId")
     List<File> findByOwnerId(@Param("ownerId") Long ownerId);
 

@@ -105,13 +105,35 @@ document.addEventListener('DOMContentLoaded', function () {
         const file = document.getElementById('file-upload').files[0];
         const fileName = document.getElementById('file-name').value;
 
+        if (!file || !fileName) {
+            alert('Please select a file and provide a name.');
+            return;
+        }
+
         console.log("File upload attempt with file:", fileName);
 
-        // Perform AJAX upload request (Example)
-        const listItem = document.createElement('li');
-        listItem.textContent = fileName;
-        fileList.appendChild(listItem);
-        alert('File uploaded successfully!');
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('fileName', fileName);
+
+        fetch('/api/file/upload', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log("File uploaded successfully");
+                    loadFiles();  // Reload files to include the newly uploaded one
+                    alert('File uploaded successfully!');
+                } else {
+                    console.error("File upload failed, status:", response.status);
+                    alert('File upload failed.');
+                }
+            })
+            .catch(error => {
+                console.error("Error during file upload:", error);
+                alert('An error occurred during file upload.');
+            });
     });
 
     // Logout
@@ -125,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadFiles() {
         console.log("Loading files...");
         fileList.innerHTML = '';
-        const files = ['file1.txt', 'file2.jpg', 'file3.pdf'];
+        const files = ['file1.txt', 'file2.jpg', 'file3.pdf']; // Replace with actual file list
         files.forEach(file => {
             const listItem = document.createElement('li');
             listItem.textContent = file;

@@ -22,17 +22,16 @@ public class FileService {
     private UserRepository userRepository;
 
     @Transactional
-    public void saveFile(MultipartFile file, String username) throws Exception {
+    public void saveFile(MultipartFile file, String fileName, String username) throws Exception {
         try {
-            // Retrieve user by username
             User user = userRepository.findByUsername(username);
+            System.out.println("Retrieved username: " + username);
             if (user == null) {
                 throw new Exception("User not found");
             }
 
-            // Create and save the new file
             File newFile = new File();
-            newFile.setFileName(file.getOriginalFilename());
+            newFile.setFileName(fileName);
             newFile.setContentType(file.getContentType());
             newFile.setData(file.getBytes());
             newFile.setUploadTime(LocalDateTime.now());
@@ -48,13 +47,10 @@ public class FileService {
     @Transactional(readOnly = true)
     public List<File> getUserFiles(String username) throws Exception {
         try {
-            // Retrieve the user by username
             User user = userRepository.findByUsername(username);
             if (user == null) {
                 throw new Exception("User not found");
             }
-
-            // Retrieve files belonging to the user
             return fileRepository.findByOwnerId(user.getId());
         } catch (Exception e) {
             System.err.println("Error in getUserFiles: " + e.getMessage());
