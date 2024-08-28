@@ -57,4 +57,14 @@ public class FileService {
             throw e;
         }
     }
+    @Transactional(readOnly = true)
+    public File getFileById(Long id) throws Exception {
+        try {
+            return fileRepository.findById(id)
+                    .orElseThrow(() -> new Exception("File not found"));
+        } catch (Exception e) {
+            System.err.println("Error in getFileById: " + e.getMessage());
+            throw e;
+        }
+    }
 }

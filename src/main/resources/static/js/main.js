@@ -143,15 +143,26 @@ document.addEventListener('DOMContentLoaded', function () {
         loginContainer.classList.remove('hidden');
     });
 
-    // Load files (Example)
+    // Load files from the server and display them
     function loadFiles() {
         console.log("Loading files...");
         fileList.innerHTML = '';
-        const files = ['file1.txt', 'file2.jpg', 'file3.pdf']; // Replace with actual file list
-        files.forEach(file => {
-            const listItem = document.createElement('li');
-            listItem.textContent = file;
-            fileList.appendChild(listItem);
-        });
+        fetch('/api/file/list')
+            .then(response => response.json())
+            .then(files => {
+                files.forEach(file => {
+                    const listItem = document.createElement('li');
+                    const downloadLink = document.createElement('a');
+                    downloadLink.textContent = file.fileName;
+                    downloadLink.href = `/api/file/download/${file.id}`;
+                    downloadLink.download = file.fileName;
+                    listItem.appendChild(downloadLink);
+                    fileList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error("Error loading files:", error);
+                alert('An error occurred while loading files.');
+            });
     }
 });
