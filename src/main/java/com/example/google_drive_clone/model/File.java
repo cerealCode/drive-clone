@@ -21,20 +21,17 @@ public class File {
     @Column(name = "data", nullable = false, columnDefinition="LONGBLOB")
     private byte[] data;
 
-
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "upload_time")
+    @Column(name = "upload_time", nullable = false)
     private LocalDateTime uploadTime;
 
     @ManyToOne
-    @JoinColumn(name = "folders")
+    @JoinColumn(name = "folder_id", nullable = false)
     private Folder folder; 
 
-
-    
     // Getters and Setters
     public Long getId() {
         return id;
@@ -83,6 +80,7 @@ public class File {
     public void setUploadTime(LocalDateTime uploadTime) {
         this.uploadTime = uploadTime;
     }
+
     public Folder getFolder() {
         return folder;
     }
@@ -90,5 +88,4 @@ public class File {
     public void setFolder(Folder folder) {
         this.folder = folder;
     }
-
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Google Drive Clone</title>
+    <!-- Use Thymeleaf to reference the CSS file -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div class="file-manager">
+        <div class="folders">
+            <h3>Folders</h3>
+            <ul id="folder-list">
+                <!-- Thymeleaf will loop through folders and append them here -->
+                <li th:each="folder : ${folders}" th:text="${folder.name}"></li>
+            </ul>
+            <button id="create-folder">Create Folder</button>
+        </div>
+        <div class="files">
+            <h3>Files</h3>
+            <div id="upload-section">
+                <input type="file" id="file-upload">
+                <input type="text" id="file-name" placeholder="File name">
+                <button id="upload-file">Upload</button>
+            </div>
+            <ul id="file-list">
+                <!-- Thymeleaf will loop through files and append them here -->
+                <li th:each="file : ${files}">
+                    <a th:href="@{/api/file/download/{id}(id=${file.id})}" th:text="${file.fileName}"></a>
+                </li>
+            </ul>
+        </div>
+        <button id="logout">Logout</button>
+    </div>
+
+    <!-- Use Thymeleaf to reference the JavaScript file -->
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>

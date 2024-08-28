@@ -19,6 +19,9 @@ public class FileDTO {
     }
 
     public void setId(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID must be a positive number");
+        }
         this.id = id;
     }
 
@@ -27,6 +30,17 @@ public class FileDTO {
     }
 
     public void setFileName(String fileName) {
+        if (fileName == null || fileName.trim().isEmpty()) {
+            throw new IllegalArgumentException("File name cannot be null or empty");
+        }
         this.fileName = fileName;
+    }
+
+    @Override
+    public String toString() {
+        return "FileDTO{" +
+                "id=" + id +
+                ", fileName='" + fileName + '\'' +
+                '}';
     }
 }
