@@ -3,34 +3,39 @@ package com.example.google_drive_clone.controller;
 import com.example.google_drive_clone.model.User;
 import com.example.google_drive_clone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@RestController
-@RequestMapping("/api")
+@Controller
+@RequestMapping("/user")
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
+    // This handles the form submission for registering a user
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public String registerUser(@ModelAttribute("user") User user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("registrationError", "There were errors in your registration.");
+            return "register";
+        }
         try {
-            // Log incoming user data
-            System.out.println("Registering user: " + user.getUsername());
-
-            // Save or update the user
-            userService.saveOrUpdateUser(user);
-
-            // Log successful registration
-            System.out.println("User registered successfully: " + user.getUsername());
-
-            return ResponseEntity.ok("Registration successful!");
+            userService.register(user);
+            return "redirect:/login?registered=true"; // Redirects to login with a success message
         } catch (Exception e) {
-            // Log the exception details
-            System.err.println("Error during user registration: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registration failed: " + e.getMessage());
+            model.addAttribute("registrationError", "An error occurred while creating your account. Please try again.");
+            return "register";
         }
     }
+
+    // Add other user-related endpoints as needed
 }

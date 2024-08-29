@@ -18,38 +18,46 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final FolderService folderService;
 
     @Autowired
-    private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FolderService folderService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.folderService = folderService;
     }
 
     @Transactional
-    public User saveOrUpdateUser(User user) {
-        try {
-            logger.info("Saving user: {}", user.getUsername());
-            
-            // Password encoding
-            if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
-                logger.info("Encoding password for user: {}", user.getUsername());
-                user.setPassword(passwordEncoder.encode(user.getPassword()));
-            } else {
-                logger.info("Password for user {} is already encoded.", user.getUsername());
-            }
+    public User register(User user) throws Exception {
+        logger.info("Registering user: {}", user.getUsername());
 
-            User savedUser = userRepository.save(user);
-            logger.info("User saved with ID: {}", savedUser.getId());
-
-            return savedUser;
-        } catch (Exception e) {
-            logger.error("Error saving user: {}", e.getMessage(), e);
-            throw e;
+        // Check if username already exists
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            logger.error("Username {} already exists", user.getUsername());
+            throw new Exception("Username already exists");
         }
+
+        // Encode the password before saving the user
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) { // Ensure password isn't already encoded
+            logger.info("Encoding password for user: {}", user.getUsername());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        // Save the user
+        User savedUser = userRepository.save(user);
+        logger.info("User registered with ID: {}", savedUser.getId());
+
+        // Create default folder for the user
+        try {
+            folderService.createFolder("Default Folder", savedUser.getUsername());
+        } catch (Exception e) {
+            logger.error("Failed to create default folder for user: {}", savedUser.getUsername(), e);
+            throw new Exception("Registration failed: Unable to create default folder");
+        }
+
+        return savedUser;
     }
 
     @Transactional(readOnly = true)

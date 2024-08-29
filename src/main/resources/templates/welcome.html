@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome - Google Drive Clone</title>
-    <!-- Use Thymeleaf to reference the CSS file -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
@@ -13,13 +12,6 @@
         <p>You will be redirected to your dashboard shortly.</p>
     </div>
 
-    <script>
-        // Redirect to the dashboard after a brief pause
-        setTimeout(() => {
-            window.location.href = "[[@{/dashboard}]]";
-        }, 2000); // Adjust the time as needed
-    </script>
-    <!-- Use Thymeleaf to reference the JavaScript file -->
     <script th:src="@{/js/main.js}"></script>
 </body>
 </html>
