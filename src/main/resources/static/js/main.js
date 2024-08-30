@@ -214,4 +214,11 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = '/dashboard'; // Redirect to the dashboard after 2 seconds
         }, 2000);
     }
+
+    // Redirect to dashboard after a delay on the welcome page
+    if (document.querySelector('.container h1 span')) {
+        setTimeout(() => {
+            window.location.href = '/dashboard';
+        }, 2000);
+    }
 });
