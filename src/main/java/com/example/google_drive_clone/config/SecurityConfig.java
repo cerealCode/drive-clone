@@ -7,54 +7,72 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-@Configuration // Indicates that this class is a source of bean definitions for the application context.
-@EnableWebSecurity // Enables Spring Security's web security support and provides the Spring MVC integration.
+@Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    /**
+     * Configures the security filter chain, defining which endpoints are accessible
+     * and under what conditions.
+     *
+     * @param http the HttpSecurity object to configure
+     * @return the configured SecurityFilterChain
+     * @throws Exception in case of any configuration error
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Disables CSRF protection. This might be necessary in some cases, but be cautious as it can open up security vulnerabilities.
+            .csrf(csrf -> csrf.disable()) // Disables CSRF protection for simplicity; enable in production.
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/perform_login", "/login", "/welcome", "/dashboard", "/register", "/api/register", "/api/file/list", "/css/**", "/js/**", "/images/**").permitAll() // Allows public access to these endpoints.
-                .requestMatchers("/api/file/**", "/api/folders/**").authenticated() // Requires authentication for these endpoints.
-                .anyRequest().authenticated() // Ensures that any other request requires authentication.
+                .requestMatchers("/", "/perform_login", "/login", "/welcome", "/dashboard", "/register", "/api/register", "/api/file/list", "/css/**", "/js/**", "/images/**").permitAll() // Allow public access to these endpoints
+                .requestMatchers("/api/folders/**").authenticated() // Secure folder-related APIs
+                .anyRequest().authenticated() // Secure all other endpoints
             )
             .formLogin(form -> form
-                .loginPage("/login") // Specifies the custom login page URL.
-                .loginProcessingUrl("/perform_login") // The URL to submit the login form data to be processed.
-                .defaultSuccessUrl("/dashboard", true) // Redirects to the dashboard after successful login.
-                .failureUrl("/login?error=true") // Redirects to the login page with an error message on failed login.
-                .permitAll() // Allows everyone to access the login page.
+                .loginPage("/login") // Custom login page
+                .loginProcessingUrl("/perform_login") // URL to submit the login form
+                .defaultSuccessUrl("/dashboard", true) // Redirect to dashboard after successful login
+                .failureUrl("/login?error=true") // Redirect to login page on failure
+                .permitAll() // Allow everyone to access the login page
             )
             .logout(logout -> logout
-                .logoutUrl("/logout") // Specifies the logout URL.
-                .logoutSuccessUrl("/login?logout=true") // Redirects to the login page after successful logout.
-                .deleteCookies("JSESSIONID") // Deletes the session cookie to ensure the session is invalidated.
-                .permitAll() // Allows everyone to access the logout functionality.
+                .logoutUrl("/logout") // URL to log out
+                .logoutSuccessUrl("/login?logout=true") // Redirect to login page after logout
+                .deleteCookies("JSESSIONID") // Invalidate session cookie
+                .permitAll() // Allow everyone to access the logout functionality
             );
 
-        return http.build(); // Builds the security filter chain.
+        return http.build(); // Build the security filter chain
     }
 
+    /**
+     * Configures the password encoder using BCrypt, a strong hashing algorithm.
+     * 
+     * @return the configured PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // Defines the password encoder bean using BCrypt, which is a strong and secure hashing algorithm.
+        return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures the authentication provider, setting up user details service and
+     * password encoder.
+     * 
+     * @return the configured DaoAuthenticationProvider
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(customUserDetailsService); // Sets the custom user details service to fetch user details during authentication.
-        authProvider.setPasswordEncoder(passwordEncoder()); // Sets the password encoder to verify user passwords.
+        authProvider.setUserDetailsService(customUserDetailsService); // Custom user details service
+        authProvider.setPasswordEncoder(passwordEncoder()); // BCrypt password encoder
         return authProvider;
     }
 }

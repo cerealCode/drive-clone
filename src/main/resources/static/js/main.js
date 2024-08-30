@@ -182,26 +182,26 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(() => alert('An error occurred while loading files.')); // Show an error if the request fails
     }
 
-    // Handle the creation of a new folder
-    createFolderButton?.addEventListener('click', function () {
-        const folderName = prompt("Enter folder name:"); // Prompt the user to enter a folder name
-        if (!folderName) return;
+    // Create a new folder
+createFolderButton?.addEventListener('click', function () {
+    const folderName = prompt("Enter folder name:");
+    if (!folderName) return;
 
-        // Send a POST request to create a new folder
-        fetch('/api/folders/create', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: folderName }), // Send the folder name as JSON
-        })
-            .then(response => {
-                if (response.ok) {
-                    loadFolders(); // Reload the folder list after successful creation
-                } else {
-                    alert('Failed to create folder'); // Show an error if the creation fails
-                }
-            })
-            .catch(() => alert('An error occurred while creating the folder.')); // Show a general error if the request fails
-    });
+    fetch('/api/folders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: folderName }), // <-- Potential issue here TODO
+    })
+    .then(response => {
+        if (response.ok) {
+            loadFolders();
+        } else {
+            alert('Failed to create folder');
+        }
+    })
+    .catch(() => alert('An error occurred while creating the folder.'));
+});
+
 
     // Initial load of folders if the user is on the dashboard
     if (dashboard && !dashboard.classList.contains('hidden')) {
